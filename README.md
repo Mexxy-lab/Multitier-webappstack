@@ -56,7 +56,8 @@ export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"                    | Used to make W
 # Execute below command in your computer to install hostmanager plugin
 
 ```bash
-vagrant plugin install vagrant-hostmanager
+vagrant plugin install vagrant-hostmanager          | Used to install the plugin manager for host management 
+vagrant.exe reload web01                               | Used to reload a VM after making changes to the                                                      Vagrantfile. 
 ```
 
 # VM SETUP
