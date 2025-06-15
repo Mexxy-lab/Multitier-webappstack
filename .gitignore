@@ -54,3 +54,4 @@ build/
 # OS-specific
 .DS_Store
 Thumbs.db
+vagrant-manual/Manual_provisioning_WinMacIntel/.vagrant/
