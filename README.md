@@ -1,6 +1,10 @@
-## Manual Provisioning of a Multi-tier stacked webapplication written in Java
+## Manual Provisioning of a Multi-tier stacked web-application written in Java
 
 - This projected was deployed manually using 5 VMs provisioned via Vagrant with help of Virtual Box
+
+## Project Architecture 
+
+![alt text](image.png)
 
 # Prerequisites
 
@@ -43,3 +47,43 @@ sudo sed -i 's|^#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.or
 ```bash
 export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"                    | Used to make WSL work with vagrant and grant windows access to Virtual box.
 ```
+# Prerequisite
+
+1. Oracle VM Virtualbox
+2. Vagrant
+3. Vagrant plugins
+
+# Execute below command in your computer to install hostmanager plugin
+
+```bash
+vagrant plugin install vagrant-hostmanager
+```
+
+# VM SETUP
+
+1. Clone source code.
+2. Cd into the repository.
+3. Switch to the main branch.
+4. cd into vagrant/Manual_provisioning
+
+```bash
+vagrant up
+```
+
+## PROVISIONING - Use the instructions in the pdf file attached to provision services.
+
+Services
+1. Nginx => Web Service
+2. Tomcat => Application Server
+3. RabbitMQ => Broker/Queuing Agent
+4. Memcache => DB Caching
+5. ElasticSearch => Indexing/Search service
+6. MySQL => SQL Database
+
+Setup should be done in below mentioned order
+
+1. MySQL (Database SVC)
+2. Memcache (DB Caching SVC)
+3. RabbitMQ (Broker/Queue SVC)
+4. Tomcat (Application SVC)
+5. Nginx (Web SVC)
