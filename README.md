@@ -68,7 +68,36 @@ vagrant.exe reload web01                               | Used to reload a VM aft
 4. cd into vagrant/Manual_provisioning
 
 ```bash
-vagrant up
+vagrant.exe up
+```
+
+## Script for Installing and Setting up Rabbitmq-server
+
+```bash
+# Install Erlang repository
+sudo tee /etc/yum.repos.d/rabbitmq_erlang.repo <<EOF
+[rabbitmq_erlang]
+name=RabbitMQ Erlang Repository
+baseurl=https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/rpm/el/7/\$basearch
+gpgcheck=1
+gpgkey=https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/gpg.key
+enabled=1
+EOF
+
+# Install RabbitMQ repository
+sudo tee /etc/yum.repos.d/rabbitmq.repo <<EOF
+[rabbitmq_rabbitmq-server]
+name=RabbitMQ Server Repository
+baseurl=https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/rpm/el/7/\$basearch
+gpgcheck=1
+gpgkey=https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/gpg.key
+enabled=1
+EOF
+
+# Update repos and install
+sudo yum clean all
+sudo yum -y install erlang
+sudo yum -y install rabbitmq-server
 ```
 
 ## PROVISIONING - Use the instructions in the pdf file attached to provision services.
