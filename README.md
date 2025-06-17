@@ -110,6 +110,7 @@ MAVEN_OPTS="-Xmx1024m" mvn clean install                | Used to install depend
 ```bash
 tail -n 100 /usr/local/tomcat/logs/localhost.2025-06-17.log                 | Used to inspect the tomcat service logs for errors and issues 
 ls -l /usr/local/tomcat/logs/*                                              | Directory for tomcat logs 
+cat /usr/local/tomcat/logs/
 ```
 
 ## Tomcat service config file 
@@ -135,6 +136,13 @@ WantedBy=multi-user.target
 ```
 ## Nginx config file for website proxy set up 
 
+```bash
+dnf install -y nginx
+sudo nano /etc/nginx/conf.d/vprofile.conf                   | Use this for Centos if you used CentOs to provision your nginx
+vi /etc/nginx/sites-available/vproapp                       | Use this if you provisioned nginx using an Ubuntu VM. 
+systemctl enable --now nginx
+systemctl start nginx
+```
 ```bash
 upstream vproapp {
     server app01:8080;
