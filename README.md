@@ -69,35 +69,62 @@ vagrant.exe reload web01                               | Used to reload a VM aft
 
 ```bash
 vagrant.exe up
+vagrant.exe global-status                   | Used to show all previous vms 
+vagrant.exe global-status --prune           } Used to prune all old vms, would clear all previous VMs
 ```
 
-## Script for Installing and Setting up Rabbitmq-server
+# 1. Allow remote access (modern config)
+```bash
+echo "loopback_users = none" | sudo tee /etc/rabbitmq/rabbitmq.conf
+```
+# 2. Restart RabbitMQ
+```bash
+sudo systemctl restart rabbitmq-server
+```
+# 3. Create the user
+```bash
+sudo rabbitmqctl add_user test test
+```
+# 4. Tag the user as admin (optional, not required for app access)
+```bash
+sudo rabbitmqctl set_user_tags test administrator
+```
+
+# 5. Set full permissions on the default virtual host
+```bash
+sudo rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
+```
 
 ```bash
-# Install Erlang repository
-sudo tee /etc/yum.repos.d/rabbitmq_erlang.repo <<EOF
-[rabbitmq_erlang]
-name=RabbitMQ Erlang Repository
-baseurl=https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/rpm/el/7/\$basearch
-gpgcheck=1
-gpgkey=https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/gpg.key
-enabled=1
-EOF
+sudo yum install java-1.8.0-openjdk                 | This java version was the one which worked correctly
+sudo alternatives --config java                     | Used to config a different version if you have multiple versions installed  
+```
 
-# Install RabbitMQ repository
-sudo tee /etc/yum.repos.d/rabbitmq.repo <<EOF
-[rabbitmq_rabbitmq-server]
-name=RabbitMQ Server Repository
-baseurl=https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/rpm/el/7/\$basearch
-gpgcheck=1
-gpgkey=https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/gpg.key
-enabled=1
-EOF
+```bash
+tail -n 100 /usr/local/tomcat/logs/localhost.2025-06-17.log                 | Used to inspect the tomcat service logs for errors and issues 
+ls -l /usr/local/tomcat/logs/*                                              | Directory for tomcat logs 
+```
 
-# Update repos and install
-sudo yum clean all
-sudo yum -y install erlang
-sudo yum -y install rabbitmq-server
+## Tomcat service config file 
+
+```bash
+[Unit]
+Description=Tomcat
+After=network.target
+
+[Service]
+User=tomcat
+WorkingDirectory=/usr/local/tomcat
+Environment=JRE_HOME=/usr/lib/jvm/jre
+Environment=JAVA_HOME=/usr/lib/jvm/jre
+Environment=CATALINA_HOME=/usr/local/tomcat
+Environment=CATALINE_BASE=/usr/local/tomcat
+ExecStart=/usr/local/tomcat/bin/catalina.sh run
+ExecStop=/usr/local/tomcat/bin/shutdown.sh
+SyslogIdentifier=tomcat-%i
+
+[Install]
+WantedBy=multi-user.target
 ```
 
 ## PROVISIONING - Use the instructions in the pdf file attached to provision services.
