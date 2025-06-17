@@ -81,9 +81,10 @@ echo "loopback_users = none" | sudo tee /etc/rabbitmq/rabbitmq.conf
 ```bash
 sudo systemctl restart rabbitmq-server
 ```
-# 3. Create the user
+# 3. Create the user and password for user
 ```bash
 sudo rabbitmqctl add_user test test
+sudo rabbitmqctl delete_user guest                  | Used to delete a user from the server 
 ```
 # 4. Tag the user as admin (optional, not required for app access)
 ```bash
@@ -94,10 +95,16 @@ sudo rabbitmqctl set_user_tags test administrator
 ```bash
 sudo rabbitmqctl set_permissions -p / test ".*" ".*" ".*"
 ```
+# 6. Used to list users currently on server 
+```bash
+sudo rabbitmqctl list_users
+sudo rabbitmqctl list_permissions -p /                  | Used to list users permissions
+```
 
 ```bash
-sudo yum install java-1.8.0-openjdk                 | This java version was the one which worked correctly
-sudo alternatives --config java                     | Used to config a different version if you have multiple versions installed  
+sudo yum install java-1.8.0-openjdk -y                  | This java version was the one which worked correctly
+sudo alternatives --config java                         | Used to config a different version if you have multiple versions installed
+MAVEN_OPTS="-Xmx1024m" mvn clean install                | Used to install dependencies and build application aritfacts  
 ```
 
 ```bash
@@ -125,6 +132,21 @@ SyslogIdentifier=tomcat-%i
 
 [Install]
 WantedBy=multi-user.target
+```
+## Nginx config file for website proxy set up 
+
+```bash
+upstream vproapp {
+    server app01:8080;
+}
+
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://vproapp;
+    }
+}
 ```
 
 ## PROVISIONING - Use the instructions in the pdf file attached to provision services.
