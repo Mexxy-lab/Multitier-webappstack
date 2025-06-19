@@ -1,32 +1,32 @@
-# adding repository and installing nginx		
-apt update
-apt install nginx -y
-cat <<EOT > vproapp
+#!/bin/bash
+
+# Install Nginx on CentOS Stream 9
+dnf install -y epel-release
+dnf install -y nginx
+
+# Create Nginx config for vproapp
+cat <<EOT > /etc/nginx/conf.d/vproapp.conf
 upstream vproapp {
-
- server app01:8080;
-
+    server app01:8080;
 }
 
 server {
+    listen 80;
 
-  listen 80;
-
-location / {
-
-  proxy_pass http://vproapp;
-
+    location / {
+        proxy_pass http://vproapp;
+    }
 }
-
-}
-
 EOT
 
-mv vproapp /etc/nginx/sites-available/vproapp
-rm -rf /etc/nginx/sites-enabled/default
-ln -s /etc/nginx/sites-available/vproapp /etc/nginx/sites-enabled/vproapp
+systemctl start firewalld 
+systemctl enable firewalld
+firewall-cmd --add-port=80/tcp
+firewall-cmd --runtime-to-permanent
+firewall-cmd --list-all
+systemctl restart firewalld
 
-#starting nginx service and firewall
+# Start and enable Nginx
 systemctl start nginx
 systemctl enable nginx
 systemctl restart nginx

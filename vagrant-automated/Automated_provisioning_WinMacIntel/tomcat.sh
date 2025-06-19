@@ -48,14 +48,20 @@ systemctl enable tomcat
 
 git clone -b main https://github.com/devopshydclub/vprofile-project.git
 cd vprofile-project
+java -version
+sudo alternatives --set java /usr/lib/jvm/java-11-openjdk-11.0.20.1.1-2.el9.x86_64/bin/java
+sudo alternatives --set javac /usr/lib/jvm/java-11-openjdk-11.0.20.1.1-2.el9.x86_64/bin/javac
 mvn install
+java -version
 systemctl stop tomcat
 sleep 20
 rm -rf /usr/local/tomcat/webapps/ROOT*
 cp target/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
 systemctl start tomcat
 sleep 20
-systemctl stop firewalld
-systemctl disable firewalld
-#cp /vagrant/application.properties /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/application.properties
+systemctl start firewalld
+systemctl enable firewalld
+firewall-cmd --get-active-zones
+firewall-cmd --zone=public --add-port=8080/tcp --permanent
+firewall-cmd --reload
 systemctl restart tomcat
